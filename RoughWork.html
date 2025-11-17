@@ -1,0 +1,271 @@
+<html>
+    <head>
+        <title>RoughWork</title>
+        <link rel="stylesheet" href="style.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<script>
+function validateForm(event) {
+    event.preventDefault();   // Stop form from submitting
+
+    let name = document.getElementById("name").value.trim();
+    let email = document.getElementById("email").value.trim();
+    let message = document.getElementById("message").value.trim();
+
+    // Name validation
+    if (name === "") {
+        alert("Please enter your name");
+        return false;
+    }
+
+    // Email validation using simple regex
+    let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email === "" || !emailPattern.test(email)) {
+        alert("Please enter a valid email address");
+        return false;
+    }
+
+    // Message validation
+    if (message.length < 5) {
+        alert("Message should be at least 5 characters");
+        return false;
+    }
+
+    alert("Form submitted successfully!");
+    return true;
+}
+</script>
+
+    </head>
+    <body>
+        <div class="navbar">
+            <a href="#" class="navbar-brand">
+            </a>
+            <div class="navbar-links">
+                <a href="RoughWork.html">Home</a>
+                <a href="product.html">Products</a>
+                <a href="About.html">About</a>
+                <a href="cart.html">Cart <i class="fa-solid fa-cart-shopping"><sup  class="cart-count">10</sup></i></a>
+                <a href="login.html">Login</a>
+                <!-- <a href="#">Log-in <i class="fas fa-user-alt"></i></a> -->
+            </div>
+        </div>
+        <div class="container1">
+            <div class="c1left">
+                <img src="img/img1.jpg">
+            </div>
+            <div class="c1right">
+                <h1>BRW<sup>BAR</sup><sub>inC. &copy;</sub></h1>
+                
+                <h2>Follow Us for more.. </h2>
+            </div>
+        </div>
+        <div class="container2">
+            <div class="c2left">
+                <h1>OUR STORY.</h1>
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur voluptates dignissimos saepe quidem vero, inventore eum praesentium blanditiis eveniet magnam 
+                    assumenda harum vel cum pariatur recusandae laboriosam quaerat explicabo 
+                    cumque perspiciatis iure at, illo voluptas a! Exercitationem reprehenderit amet enim distinctio repellat magni iusto
+                     deleniti quae, tempora expedita porro ex minus ullam consequuntur dolorem repudiandae vitae provident excepturi obcaecati 
+                     quam at voluptate molestiae modi quis!</p><p> Placeat ut natus eius ea quidem distinctio autem aspernatur, suscipit molestias mollitia, voluptatibus vitae modi sint,
+                      assumenda veniam eos dicta? Optio ex, laborum ab cum autem expedita, accusantium excepturi ipsum vitae fugiat iure earum. Quia.</p><p>
+                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Itaque, recusandae? Natus explicabo deserunt consequuntur culpa repellat debitis voluptatum
+                     nesciunt omnis doloribus numquam error incidunt, facilis modi repudiandae quis? Consectetur, laboriosam?
+                </p>
+            </div>
+            <div class="c2right">
+                <img src="img/img3.jpg">
+            </div>
+        </div>
+<br><br>
+        <div class="container6">
+            <div class="card text-center">
+                <div class="cards">
+                  <h5><q>Makeup isn’t a mask, it’s an art. <span>And I’m the canvas, darling.</span></q></h5>
+                  <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                </div>
+               
+              </div>
+        </div>
+        <div class="container3">
+        <video width="100%" height="400"   autoplay>
+            <source src="vid/vid1.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <div class="overlay-text">
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nam exercitationem nulla sunt velit atque, facere natus. Delectus quas amet nostrum! Recusandae 
+                quas repellat tempore nam, exercitationem accusamus modi sit voluptatem!</p>
+        </div>
+        </div><br><br>
+        <div class="container1">
+            <div class="c1left">
+                <div class="c11left">
+                    <img src="img/img9.jpg">
+                </div>
+            </div>
+            <div class="c1right">
+                <div class="c1right">
+                    <h3><span>WE CHANGE<br>THE WORLD</span><span1><br> ONE EYEBROW<br>
+                    AT A TIME</span1></h3>
+                </div>
+            </div>
+        </div><br><br>
+        <p class="follow">Follow Us for More..</p>
+        <div class="container4">
+            <div class="c4left"></div>
+            <div class="c4right"></div>
+            <div class="card mb-3" style="max-width: 640px;">
+                <div class="row g-0">
+                  <div class="col-md-4">
+                    <img src="img/img4.jpg" class="img-fluid rounded-start" alt="...">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <h5 class="card-title">L'oreal</h5>
+                      <p class="card-text">This is a wider card with Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magnam rerum tempore porro tenetur qui. Provident, inventore in tempora tenetur quos, explicabo minima tempore a dicta mollitia corrupti ratione nobis suscipit!supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                      <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card mb-3" style="max-width: 640px;">
+                <div class="row g-0">
+                  <div class="col-md-4">
+                    <img src="img/img2.jpg" class="img-fluid rounded-start" alt="...">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <h5 class="card-title">Estee</h5>
+                      <p class="card-text">This is a wider card with supporting text below as a natural lead-in to 
+                         Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium adipisci architecto deserunt pariatur. Culpa quibusdam, incidunt quos, quia temporibus quisquam beatae at voluptatibus amet, nisi praesentium aperiam iure velit. Optio!additional content. This content is a little bit longer.</p>
+                      <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+        <marquee class="scroll">Stay connected with us for an exclusive 40% offer!        
+            Stay connected with us for an exclusive 40% offer!      
+            Stay connected with us for an exclusive 40% offer!       
+            Stay connected with us for an exclusive 40% offer!       
+        </marquee><br><br>
+        <div class="container5">
+            <div id="carouselExampleDark" class="carousel carousel-dark slide"  data-bs-ride="carousel" data-bs-interval="500" data-bs-wrap="true">
+                <div class="carousel-indicators">
+                  <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                  <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                  <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                </div>
+                <div class="carousel-inner">
+                  <div class="carousel-item active" data-bs-interval="1000">
+                    <img src="img/img6.jpg" class="d-block w-100" alt="...">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>Foundation Base</h5>
+                        <p>Long-lasting, smooth finish. Perfect for all skin types.</p>
+                    </div>
+                  </div>
+                  <div class="carousel-item" data-bs-interval="1000">
+                    <img src="img/img7.jpg" class="d-block w-100" alt="...">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>Eye Shadow Palette</h5>
+                        <p>Vibrant shades for day-to-night looks.</p>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <img src="img/img8.jpg" class="d-block w-100" alt="...">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>Matte Lipstick</h5>
+                        <p>Rich pigment with a comfortable matte finish.</p>
+                    </div>
+                  </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
+                </button>
+              </div>
+        </div><br><br>
+        <div class="container7">
+            <div class="c7left">
+                <p><span>Confidence is the best makeup you can wear.</span><br> But a little mascara never hurts!</p>
+            </div>
+            <div class="c7right">
+                <img src="img/img10.jpg">
+            </div>
+        </div>
+
+        
+        <div class="container8" id="contact">
+            <div class="text-content">
+                <h1>Get in Touch</h1>
+                <p>500 Terry Francine<br> St. San Francisco,<br> CA 94158
+
+                    info@mysite.com<br>
+                    
+                    Tel: 123-456-7890</p>
+                <p><i class="fa-brands fa-facebook"></i>    <i class="fa-brands fa-twitter"></i>   <i class="fa-brands fa-instagram"></i></p>
+               
+            </div>
+           <form onsubmit="validateForm(event)">
+    <h2>Contact Us</h2>
+
+    <div class="form-group">
+        <label for="name">Name:</label>
+        <input id="name" type="text" placeholder="Enter your name">
+    </div>
+
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <input id="email" type="email" placeholder="Enter your email">
+    </div>
+
+    <div class="form-group">
+        <label for="message">Message:</label>
+        <textarea id="message" rows="4" placeholder="Enter your message"></textarea>
+    </div>
+
+    <button type="submit">Submit</button>
+</form>
+
+        </div>
+        <br><br>
+        
+        <footer class="footer">
+            <div class="container">
+              <div class="row">
+                <div class="col-md-4">
+                  <h5>About Us</h5>
+                  <p>We are a leading brand in makeup and beauty products, offering high-quality items for all your beauty needs. Our mission is to empower everyone to look and feel their best.</p>
+                </div>
+                <div class="col-md-4">
+                  <h5>Quick Links</h5>
+                  <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Products</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Contact</a></li>
+                  </ul>
+                </div>
+                <div class="col-md-4">
+                  <h5>Contact Us</h5>
+                  <p>Email: <a href="mailto:info@example.com">info@example.com</a></p>
+                  <p>Phone: <a href="tel:+1234567890">+123 456 7890</a></p>
+                </div>
+              </div>
+              <div class="text-center mt-4">
+                <p class="text-white">© 2024 Your Website Name. All Rights Reserved.</p>
+              </div>
+            </div>
+          </footer>
+          
+          
+        
+    </body>
+</html>

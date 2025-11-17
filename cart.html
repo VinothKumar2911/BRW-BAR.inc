@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Cart — Beauty Store (Mock Payments)</title>
+
+<style>
+  :root{
+    --bg:#f6f7fb;
+    --card:#ffffff;
+    --accent:#ff6fa3;
+    --muted:#6b7280;
+    --black:#111827;
+    --glass: rgba(255,255,255,0.6);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Inter, Roboto, Arial, sans-serif;
+    background: linear-gradient(180deg,#fbfbfd 0%, #f0f4f9 100%);
+    color:var(--black);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+
+  /* NAV */
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 20px;
+    background:linear-gradient(90deg,#111827,#0f172a);
+    color:white;
+    gap:12px;
+  }
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand .logo {
+    width:42px;height:42px;border-radius:10px;
+    background:linear-gradient(135deg,var(--accent),#ffb86b);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;color:white;font-size:18px;box-shadow:0 6px 18px rgba(17,24,39,0.2);
+  }
+  .brand h1{font-size:18px;margin:0}
+  .top-actions{display:flex;gap:12px;align-items:center}
+  .cart-chip{background:#fff;color:#111;padding:8px 12px;border-radius:999px;font-weight:600;box-shadow:0 6px 18px rgba(2,6,23,0.2)}
+
+  /* LAYOUT */
+  .container{max-width:1200px;margin:26px auto;padding:0 18px;display:grid;grid-template-columns:270px 1fr 340px;gap:20px;align-items:start}
+  @media (max-width:980px){ .container{grid-template-columns:1fr; padding-bottom:80px} .cart-box{order:3} .product-section{order:1} .product-list{order:2} }
+
+  /* SIDEBAR */
+  .product-section{
+    background:var(--card);padding:16px;border-radius:12px;border:1px solid rgba(15,23,42,0.05);height:78vh;overflow:auto;
+    box-shadow:0 6px 22px rgba(12,18,30,0.04);
+  }
+  .product-section h3{margin:4px 0 12px;font-size:16px}
+  .filter-box input[type="text"]{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e9ef}
+  .cat-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .cat-pill{padding:8px 10px;border-radius:999px;background:#f3f4f6;border:1px solid #eceff3;font-size:13px;cursor:pointer}
+  .cat-pill.active{background:linear-gradient(90deg,var(--accent),#ffb86b);color:white;border:none;box-shadow:0 6px 18px rgba(255,111,150,0.12)}
+
+  /* PRODUCTS */
+  .product-list{
+    background:transparent;
+  }
+  .search-box{margin-bottom:12px}
+  #globalSearch{width:100%;padding:12px;border-radius:10px;border:1px solid #e6e9ef;font-size:15px}
+  #cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  @media (max-width:980px){ #cards{grid-template-columns:repeat(1,1fr)} }
+  .product-card{
+    background:var(--card);border-radius:12px;padding:12px;display:flex;gap:12px;align-items:center;
+    border:1px solid rgba(15,23,42,0.04);transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .product-card:hover{transform:translateY(-6px);box-shadow:0 14px 40px rgba(15,23,42,0.08)}
+  .product-card img{width:120px;height:120px;border-radius:8px;object-fit:cover;flex-shrink:0}
+  .product-info h4{margin:0 0 6px;font-size:16px}
+  .product-info p{margin:0 0 8px;color:var(--muted);font-size:13px}
+  .product-price{font-weight:800;font-size:16px;margin-top:6px}
+  .add-btn{background:linear-gradient(90deg,var(--accent),#ffb86b);border:none;padding:8px 12px;border-radius:8px;color:white;cursor:pointer;font-weight:700;box-shadow:0 8px 24px rgba(255,111,150,0.12);transition:transform .12s}
+  .add-btn:active{transform:translateY(1px)}
+
+  /* CART */
+  .cart-box{
+    background:var(--card);padding:16px;border-radius:12px;border:1px solid rgba(15,23,42,0.04);height:78vh;overflow:auto;position:relative;
+    box-shadow:0 6px 22px rgba(12,18,30,0.04);
+  }
+  .cart-box h3{margin:0 0 12px}
+  .cart-item{display:flex;gap:12px;padding:12px;border-radius:10px;align-items:center;background:linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.4));border:1px solid rgba(0,0,0,0.03);margin-bottom:12px;transition:transform .18s}
+  .cart-item:hover{transform:translateX(4px)}
+  .cart-item img{width:84px;height:84px;border-radius:8px;object-fit:cover}
+  .cart-item .meta{flex:1}
+  .qty-controls{display:flex;gap:8px;align-items:center;margin-top:8px}
+  .qty-btn{padding:6px 10px;border-radius:8px;border:none;background:#111827;color:white;cursor:pointer}
+  .remove-btn{background:transparent;border:none;color:#ef4444;cursor:pointer;margin-left:8px}
+
+  .summary{margin-top:16px;background:linear-gradient(180deg,#fff,#fff);padding:12px;border-radius:10px;border:1px solid rgba(15,23,42,0.04)}
+  .summary .row{display:flex;justify-content:space-between;padding:6px 0}
+  .checkout-btn{width:100%;padding:12px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent),#ffb86b);color:white;font-weight:800;margin-top:12px;cursor:pointer;box-shadow:0 12px 28px rgba(255,111,150,0.12)}
+  .small-muted{font-size:13px;color:var(--muted)}
+
+  /* PAYMENT POPUP */
+  .payment-popup{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(2,6,23,0.45), rgba(2,6,23,0.6));z-index:9999}
+  .payment-card{width:420px;background:var(--card);padding:20px;border-radius:14px;box-shadow:0 24px 60px rgba(2,6,23,0.45);transform:translateY(20px);animation:pop .18s ease forwards}
+  @keyframes pop{to{transform:translateY(0)}}
+  .pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+  .pay-btn{padding:12px;border-radius:10px;border:1px solid rgba(15,23,42,0.06);cursor:pointer;background:#fff;font-weight:700}
+  .pay-btn.gpay{background:linear-gradient(90deg,#0f172a,#0b2540);color:white}
+  .pay-btn.phonepe{background:linear-gradient(90deg,#3a1f85,#7b2ff7);color:white}
+  .pay-btn.paytm{background:linear-gradient(90deg,#0b5cff,#26a6ff);color:white}
+  .pay-btn.card{background:linear-gradient(90deg,#111827,#374151);color:white}
+  .pay-row{display:flex;gap:10px;align-items:center}
+  .close-small{margin-top:14px;background:transparent;border:none;color:var(--muted);cursor:pointer}
+
+  /* TOAST */
+  .toast{position:fixed;right:20px;bottom:22px;background:#111827;color:white;padding:10px 14px;border-radius:8px;box-shadow:0 10px 30px rgba(2,6,23,0.28);z-index:10000;opacity:0;transform:translateY(12px);animation:toastIn .28s ease forwards}
+  @keyframes toastIn{to{opacity:1;transform:none}}
+
+  /* RECEIPT */
+  #receiptBox{position:fixed;right:20px;top:90px;width:320px;max-height:70vh;overflow:auto;padding:12px;background:linear-gradient(180deg,#fff,#fbfbff);border-radius:12px;border:1px solid rgba(15,23,42,0.04);box-shadow:0 20px 60px rgba(2,6,23,0.08);display:none;z-index:9998}
+  #receiptBox h3{margin:0 0 8px;color:var(--accent)}
+
+  /* little micro-interactions */
+  .fade-in{animation:fadeIn .3s ease both}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+</style>
+
+<!-- Put paymentsClient initializer BEFORE the Google Pay script tag -->
+<script>
+  // paymentsClient skeleton — defined before external script loads
+  let paymentsClient = null;
+  function onGooglePayLoaded(){
+    try{
+      paymentsClient = new google.payments.api.PaymentsClient({ environment: "TEST" });
+      console.log("Google Pay SDK loaded (TEST).");
+    }catch(e){
+      console.log("Could not initialize Google Pay client (will use mock):", e);
+      paymentsClient = null;
+    }
+  }
+</script>
+
+<!-- Google Pay SDK (calls onGooglePayLoaded() on load) -->
+<script async
+  src="https://pay.google.com/gp/p/js/pay.js"
+  onload="onGooglePayLoaded()">
+</script>
+</head>
+
+<body>
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">BR</div>
+      <div>
+        <h1 style="margin:0">Beauty Store — Cart</h1>
+        <div class="small-muted" style="font-size:13px">Demo / Mock Payment Integrations</div>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <div class="small-muted">Demo Mode</div>
+      <div class="cart-chip">🛒 <strong style="margin-left:8px" class="cart-count">0</strong></div>
+    </div>
+  </div>
+
+  <main class="container">
+    <!-- FILTERS -->
+    <aside class="product-section">
+      <h3>Filters & Quick Search</h3>
+      <div class="filter-box">
+        <input id="searchInput" placeholder="Search product name or description" />
+        <div class="cat-row" style="margin-top:12px" id="catRow"></div>
+
+        <div style="margin-top:12px">
+          <label class="small-muted">Sort</label>
+          <select id="sortSelect" style="width:100%;padding:8px;border-radius:8px;border:1px solid #e6e9ef;margin-top:6px">
+            <option value="new">Newest</option>
+            <option value="price_asc">Price — Low to High</option>
+            <option value="price_desc">Price — High to Low</option>
+          </select>
+        </div>
+
+        <button id="applyFilters" class="add-btn" style="width:100%;margin-top:12px">Apply Filters</button>
+      </div>
+    </aside>
+
+    <!-- PRODUCTS -->
+    <section class="product-list">
+      <div class="search-box">
+        <input id="globalSearch" placeholder="Search across visible products..." />
+      </div>
+
+      <div id="cards"></div>
+    </section>
+
+    <!-- CART -->
+    <aside class="cart-box">
+      <h3>Your Cart</h3>
+      <div id="cartItems"></div>
+
+      <div class="summary" id="summaryBlock">
+        <div class="row"><div class="small-muted">Subtotal</div><div id="subtotal">₹0.00</div></div>
+        <div class="row"><div class="small-muted">Tax (18%)</div><div id="tax">₹0.00</div></div>
+        <div class="row"><div class="small-muted">Shipping</div><div id="shipping">₹0.00</div></div>
+        <div class="row"><div class="small-muted">Discount</div><div id="discount">- ₹0.00</div></div>
+        <div class="row" style="font-weight:800;margin-top:6px"><div>Total</div><div id="total">₹0.00</div></div>
+
+        <button class="checkout-btn" onclick="openPaymentPopup()">Proceed to Checkout</button>
+      </div>
+    </aside>
+  </main>
+
+  <!-- RECEIPT -->
+  <div id="receiptBox"></div>
+
+  <!-- PAYMENT POPUP -->
+  <div id="paymentPopup" class="payment-popup">
+    <div class="payment-card">
+      <h3>Choose Payment (Mock)</h3>
+      <div class="small-muted">All payments are mocks for demo — no real charging.</div>
+
+      <div class="pay-grid" style="margin-top:14px">
+        <div class="pay-btn gpay" onclick="payWithGooglePay()">
+          <div style="font-weight:800">Google Pay (TEST)</div>
+          <div style="font-size:13px;opacity:0.9">Opens SDK (if loaded) — else mock</div>
+        </div>
+
+        <div class="pay-btn phonepe" onclick="phonePeMock()">
+          <div style="font-weight:800">PhonePe (Mock)</div>
+          <div style="font-size:13px;opacity:0.9">Simulated UPI flow</div>
+        </div>
+
+        <div class="pay-btn paytm" onclick="paytmMock()">
+          <div style="font-weight:800">Paytm (Mock)</div>
+          <div style="font-size:13px;opacity:0.9">Mock checkout</div>
+        </div>
+
+        <div class="pay-btn card" onclick="cardMock()">
+          <div style="font-weight:800">Card / Netbanking (Mock)</div>
+          <div style="font-size:13px;opacity:0.9">Simple mock form</div>
+        </div>
+      </div>
+
+      <div style="margin-top:14px;display:flex;gap:10px;align-items:center;justify-content:space-between">
+        <button class="close-small" onclick="closePaymentPopup()">Close</button>
+        <button class="close-small" onclick="codMock()" style="background:#111827;color:#fff;border-radius:8px;padding:8px 12px">Cash on Delivery</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast container -->
+  <div id="toastRoot"></div>
+
+<script>
+/* -------------------------
+   Demo product data fallback (so page works even if backend is down)
+   ------------------------- */
+const DEMO_PRODUCTS = [
+  { _id: 'p1', name:'Rose Glow Face Serum', price:599, description:'Brightening serum for glowing skin', image:'https://images.unsplash.com/photo-1544207245-4a67c2f6d3f8?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=1', category:'skincare' },
+  { _id: 'p2', name:'Matte Stay Lipstick', price:399, description:'Long-lasting matte lipstick, transfer-proof', image:'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=2', category:'makeup' },
+  { _id: 'p3', name:'Velvet Kajal', price:149, description:'Smudge-proof defining kajal', image:'https://images.unsplash.com/photo-1543163521-1bf539c5a1b9?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=3', category:'makeup' },
+  { _id: 'p4', name:'Hydra Toner', price:249, description:'Hydrating toner with rose water', image:'https://images.unsplash.com/photo-1560343090-f0409e92791a?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=4', category:'toner' }
+];
+
+let products = [];
+let visibleProducts = [];
+let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+const CATEGORIES = ['skincare','makeup','toner','eye'];
+
+const PRODUCTS_API = 'http://localhost:5000/products'; // attempted backend
+
+/* -------------------------
+   Init
+   ------------------------- */
+window.addEventListener('load', init);
+
+async function init(){
+  await fetchProducts();
+  setupUI();
+  renderProducts(visibleProducts);
+  renderCart();
+  renderCategories();
+}
+
+/* -------------------------
+   Fetch products (with fallback)
+   ------------------------- */
+async function fetchProducts(){
+  try{
+    const r = await fetch(PRODUCTS_API, { cache:'no-store' });
+    if(!r.ok) throw new Error('no backend');
+    const data = await r.json();
+    products = Array.isArray(data) ? data : DEMO_PRODUCTS;
+  }catch(e){
+    console.warn('Backend not available — using demo products', e);
+    products = DEMO_PRODUCTS;
+  }
+  // normalize
+  products = products.map(p => ({
+    _id: p._id || p.id || (Math.random().toString(36).slice(2,9)),
+    name: p.name || p.title || 'Unnamed',
+    price: Number(p.price || p.amount || 0),
+    description: p.description || p.desc || '',
+    image: p.image || p.img || 'https://via.placeholder.com/160',
+    category: p.category || 'skincare',
+  }));
+  visibleProducts = products.slice();
+}
+
+/* -------------------------
+   UI wiring
+   ------------------------- */
+function setupUI(){
+  document.getElementById('globalSearch').addEventListener('input', (e)=>{
+    const q = e.target.value.trim().toLowerCase();
+    renderProducts(visibleProducts.filter(p => p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q)));
+  });
+
+  document.getElementById('applyFilters').addEventListener('click', applyFilters);
+  document.getElementById('searchInput').addEventListener('input', applyFilters);
+  document.getElementById('sortSelect').addEventListener('change', applyFilters);
+}
+
+/* -------------------------
+   Categories render
+   ------------------------- */
+function renderCategories(){
+  const row = document.getElementById('catRow');
+  row.innerHTML = '';
+  const used = Array.from(new Set(products.map(p => p.category))).slice(0,8);
+  used.forEach((c, idx) => {
+    const el = document.createElement('button');
+    el.className = 'cat-pill active';
+    el.innerText = capitalize(c);
+    el.dataset.cat = c;
+    el.onclick = () => {
+      el.classList.toggle('active');
+      applyFilters();
+    };
+    row.appendChild(el);
+  });
+}
+
+/* -------------------------
+   Filters
+   ------------------------- */
+function applyFilters(){
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const selected = Array.from(document.querySelectorAll('.cat-pill.active')).map(x=>x.dataset.cat);
+  const sort = document.getElementById('sortSelect').value;
+  visibleProducts = products.filter(p => {
+    const matchCat = selected.length ? selected.includes(p.category) : true;
+    const matchQ = q ? (p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q)) : true;
+    return matchCat && matchQ;
+  });
+  if(sort === 'price_asc') visibleProducts.sort((a,b)=>a.price-b.price);
+  if(sort === 'price_desc') visibleProducts.sort((a,b)=>b.price-a.price);
+  renderProducts(visibleProducts);
+}
+
+/* -------------------------
+   Products render
+   ------------------------- */
+function renderProducts(list){
+  const cards = document.getElementById('cards');
+  if(!list || list.length === 0){ cards.innerHTML = '<p class="small-muted">No products found.</p>'; return; }
+  cards.innerHTML = list.map(p => `
+    <div class="product-card fade-in">
+      <img src="${p.image}" alt="${escapeHtml(p.name)}" />
+      <div style="flex:1">
+        <div class="product-info">
+          <h4>${escapeHtml(p.name)}</h4>
+          <p>${escapeHtml(p.description)}</p>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px">
+            <div>
+              <div class="product-price">₹${p.price}</div>
+              <div class="small-muted" style="margin-top:6px">${capitalize(p.category)}</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+              <button class="add-btn" onclick="addToCart('${p._id}')">Add to Cart</button>
+              <button style="background:transparent;border:none;color:var(--muted);cursor:pointer" onclick="quickView('${p._id}')">Quick view</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* -------------------------
+   Quick view (small toast-like)
+   ------------------------- */
+function quickView(id){
+  const p = products.find(x=>x._id===id);
+  showToast(`${p.name} — ₹${p.price} — ${p.description}`);
+}
+
+/* -------------------------
+   Cart management
+   ------------------------- */
+function addToCart(id){
+  const p = products.find(x=>x._id===id);
+  if(!p) return showToast('Product not found', true);
+  const idx = cart.findIndex(i=>i._id===p._id);
+  if(idx>-1) cart[idx].qty += 1;
+  else cart.push({ _id:p._id, name:p.name, price:p.price, qty:1, image:p.image });
+  saveCart();
+  renderCart();
+  showToast(`${p.name} added to cart`);
+}
+
+function changeQty(index, delta){
+  cart[index].qty += delta;
+  if(cart[index].qty <= 0){ cart.splice(index,1); }
+  saveCart();
+  renderCart();
+}
+
+function removeCartItem(index){
+  cart.splice(index,1);
+  saveCart();
+  renderCart();
+}
+
+function saveCart(){
+  localStorage.setItem('cart', JSON.stringify(cart));
+  document.querySelectorAll('.cart-count').forEach(n => n.innerText = cart.reduce((s,i)=>s+i.qty,0));
+}
+
+function renderCart(){
+  const container = document.getElementById('cartItems');
+  if(!cart || cart.length === 0){
+    container.innerHTML = `<p class="small-muted">Your cart is empty — add some products.</p>`;
+  } else {
+    container.innerHTML = cart.map((it, idx) => `
+      <div class="cart-item">
+        <img src="${it.image}" alt="${escapeHtml(it.name)}" />
+        <div class="meta">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <strong>${escapeHtml(it.name)}</strong>
+            <div style="font-weight:700">₹${it.price * it.qty}</div>
+          </div>
+          <div class="small-muted">₹${it.price} × ${it.qty}</div>
+          <div class="qty-controls">
+            <button class="qty-btn" onclick="changeQty(${idx}, -1)">−</button>
+            <div style="min-width:26px;text-align:center">${it.qty}</div>
+            <button class="qty-btn" onclick="changeQty(${idx}, +1)">+</button>
+            <button class="remove-btn" onclick="removeCartItem(${idx})">Remove</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+  updateSummary();
+  saveCart();
+}
+
+/* -------------------------
+   Summary & receipt
+   ------------------------- */
+function updateSummary(){
+  const subtotal = cart.reduce((s,i)=>s + i.price * i.qty, 0);
+  const tax = subtotal * 0.18;
+  const discount = (localStorage.getItem('appliedCoupon') === 'SAVE10') ? subtotal*0.10 : 0;
+  const shipping = subtotal > 1000 || subtotal === 0 ? 0 : 50;
+  const total = subtotal + tax + shipping - discount;
+
+  document.getElementById('subtotal').innerText = `₹${subtotal.toFixed(2)}`;
+  document.getElementById('tax').innerText = `₹${tax.toFixed(2)}`;
+  document.getElementById('discount').innerText = `- ₹${discount.toFixed(2)}`;
+  document.getElementById('shipping').innerText = `₹${shipping.toFixed(2)}`;
+  document.getElementById('total').innerText = `₹${total.toFixed(2)}`;
+  document.querySelectorAll('.cart-count').forEach(n => n.innerText = cart.reduce((s,i)=>s+i.qty,0));
+  // update receipt if visible
+  if(document.getElementById('receiptBox').style.display === 'block') buildReceipt();
+}
+
+function buildReceipt(){
+  const receipt = document.getElementById('receiptBox');
+  if(!receipt) return;
+  const subtotal = cart.reduce((s,i)=>s + i.price * i.qty, 0);
+  const tax = subtotal * 0.18;
+  const discount = (localStorage.getItem('appliedCoupon') === 'SAVE10') ? subtotal*0.10 : 0;
+  const shipping = subtotal > 1000 || subtotal === 0 ? 0 : 50;
+  const total = subtotal + tax + shipping - discount;
+  const date = new Date().toLocaleString();
+
+  receipt.innerHTML = `
+    <h3>🧾 Order Receipt</h3>
+    <div style="font-size:13px;color:${'#6b7280'}">Date: ${date}</div>
+    <hr style="border:none;border-top:1px solid #eef2f7;margin:8px 0"/>
+    <div style="max-height:320px;overflow:auto">
+      ${cart.map(it => `<div style="display:flex;justify-content:space-between;padding:6px 0"><div>${escapeHtml(it.name)} x${it.qty}</div><div>₹${(it.price*it.qty).toFixed(2)}</div></div>`).join('')}
+    </div>
+    <hr style="border:none;border-top:1px solid #eef2f7;margin:8px 0"/>
+    <div style="display:flex;justify-content:space-between"><div>Subtotal</div><div>₹${subtotal.toFixed(2)}</div></div>
+    <div style="display:flex;justify-content:space-between"><div>Tax (18%)</div><div>₹${tax.toFixed(2)}</div></div>
+    <div style="display:flex;justify-content:space-between"><div>Shipping</div><div>₹${shipping.toFixed(2)}</div></div>
+    <div style="display:flex;justify-content:space-between"><div>Discount</div><div>- ₹${discount.toFixed(2)}</div></div>
+    <hr style="border:none;border-top:1px solid #eef2f7;margin:8px 0"/>
+    <div style="display:flex;justify-content:space-between;font-weight:800"><div>Total</div><div>₹${total.toFixed(2)}</div></div>
+    <div style="margin-top:10px;font-size:13px;color:${'#6b7280'}">Status: <strong>Paid (Mock)</strong></div>
+  `;
+}
+
+/* -------------------------
+   Payments — MOCK implementations
+   ------------------------- */
+function openPaymentPopup(){
+  if(cart.length === 0) return showToast('Your cart is empty — add products to pay', true);
+  document.getElementById('paymentPopup').style.display = 'flex';
+}
+
+function closePaymentPopup(){
+  document.getElementById('paymentPopup').style.display = 'none';
+}
+
+function showToast(msg, isErr=false){
+  const root = document.getElementById('toastRoot');
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.style.background = isErr ? '#ef4444' : '#111827';
+  el.innerText = msg;
+  root.appendChild(el);
+  setTimeout(()=>el.remove(),2200);
+}
+
+/* Google Pay integration (TEST/mocked) */
+function payWithGooglePay(){
+  // If paymentsClient loaded (SDK available), call it; otherwise fallback to mock
+  if(paymentsClient && paymentsClient.loadPaymentData){
+    try{
+      const request = {
+        apiVersion:2, apiVersionMinor:0,
+        allowedPaymentMethods:[{
+          type:"CARD",
+          parameters:{allowedAuthMethods:["PAN_ONLY","CRYPTOGRAM_3DS"], allowedCardNetworks:["VISA","MASTERCARD"]},
+          tokenizationSpecification:{type:"PAYMENT_GATEWAY", parameters:{gateway:"example", gatewayMerchantId:"exampleMerchantId"}}
+        }],
+        merchantInfo:{merchantName:"Beauty Store (TEST)"},
+        transactionInfo:{totalPriceStatus:"FINAL", totalPrice: computeTotal().toFixed(2), currencyCode:"INR"}
+      };
+      paymentsClient.loadPaymentData(request).then(pd=>{
+        showToast('Google Pay (SDK) — success (mock)');
+        finalizeMockOrder('Google Pay (SDK)');
+      }).catch(err=>{
+        console.warn('GPay canceled or error, fallback to mock success', err);
+        showToast('Google Pay canceled — using mock success');
+        finalizeMockOrder('Google Pay (Fallback)');
+      });
+    }catch(e){
+      console.warn('GPay exception — fallback to mock', e);
+      showToast('Google Pay not available — using mock');
+      finalizeMockOrder('Google Pay (Fallback)');
+    }
+  } else {
+    // Mock flow (since SDK may not run locally)
+    showToast('Google Pay (mock) — processing');
+    setTimeout(()=> finalizeMockOrder('Google Pay (Mock)'), 800);
+  }
+}
+
+function phonePeMock(){
+  showToast('PhonePe (mock) — processing');
+  setTimeout(()=> finalizeMockOrder('PhonePe (Mock)'), 900);
+}
+
+function paytmMock(){
+  showToast('Paytm (mock) — processing');
+  setTimeout(()=> finalizeMockOrder('Paytm (Mock)'), 900);
+}
+
+function cardMock(){
+  // Simple prompt simulation for card details (mock)
+  const name = prompt('Enter name on card (mock):','John Doe');
+  if(!name) return showToast('Card payment cancelled', true);
+  showToast('Card (mock) — processing');
+  setTimeout(()=> finalizeMockOrder('Card (Mock)'), 900);
+}
+
+function codMock(){
+  showToast('Cash on Delivery selected — order placed (mock)');
+  finalizeMockOrder('Cash on Delivery');
+}
+
+/* finalize order — clear cart & show receipt */
+function finalizeMockOrder(method){
+  // here you might send order to backend — for demo we just show receipt
+  closePaymentPopup();
+  showToast(`${method} — Payment successful (mock)`);
+  // show receipt details on right
+  document.getElementById('receiptBox').style.display = 'block';
+  buildReceipt();
+  // clear cart
+  cart = [];
+  saveCart();
+  renderCart();
+}
+
+/* helper compute total */
+function computeTotal(){
+  const subtotal = cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const tax = subtotal*0.18;
+  const discount = (localStorage.getItem('appliedCoupon') === 'SAVE10') ? subtotal*0.10 : 0;
+  const shipping = subtotal > 1000 || subtotal === 0 ? 0 : 50;
+  return subtotal + tax + shipping - discount;
+}
+
+/* -------------------------
+   Utilities
+   ------------------------- */
+function escapeHtml(s){ if(!s) return ''; return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]); }
+function capitalize(s){ if(!s) return ''; return s.charAt(0).toUpperCase()+s.slice(1); }
+</script>
+<button onclick="window.location.href='product.html'"
+style="
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    background:linear-gradient(90deg,#ff6fa3,#ffb86b);
+    color:white;
+    padding:12px 18px;
+    font-size:15px;
+    font-weight:700;
+    border:none;
+    border-radius:10px;
+    box-shadow:0 8px 22px rgba(255,111,150,0.25);
+    cursor:pointer;
+    z-index:99999;
+">
+← Back to Products
+</button>
+</body>
+</html>
